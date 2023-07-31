@@ -159,8 +159,16 @@ private:
                 auto event = events_.front();
                 events_.pop();
                 std::packaged_task<BoundTask> task(std::bind(&OnEvent, event));
+                // auto future = task.get_future(); // sync mode
                 // std::cout << "==========push event: " << event << endl << flush;
                 PushTask(task);
+                // sync mode
+                // if (future.wait_for(std::chrono::milliseconds(1000 * 5)) == std::future_status::ready) {
+                //     std::cout << "=========future: " << future.get() << endl << flush;
+                // } else {
+
+                //     std::cout << "=========future: fail " << endl << flush;
+                // }
             }
         }
     }
