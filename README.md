@@ -1,0 +1,6 @@
+- avplayer: ffmpeg + sdl2 实现mp4的音视频播放（暂无音视频同步处理）
+- regex: md5使用以及regex库的使用（解析rtsp）
+- ringbuffer: 一读一写环形队列
+- spinlock: c++使用atomic实现自旋锁(非mutex)
+- taskpool: 事件中心的任务池
+- threadpool: 线程池c++11实现（用future了就不是异步啦）

@@ -192,18 +192,18 @@ void Test()
 }
 int main()
 {
-    // cout << "******enter for start\n" << flush;
-    // cin.get();
-    // std::thread t(&Test);
-    // pthread_setname_np(t.native_handle(), "test");
-    // if (t.joinable()) {
-    //     t.join();
-    // }
-    // cout << "******run done, entor for exit\n" << flush;
-    // cin.get();
+    cout << "******enter for start\n" << flush;
+    cin.get();
+    std::thread t(&Test);
+    pthread_setname_np(t.native_handle(), "test");
+    if (t.joinable()) {
+        t.join();
+    }
+    cout << "******run done, entor for exit\n" << flush;
+    cin.get();
     // vector<uint8_t> vec{1, 2, 3};
     // const char* p = reinterpret_cast<const char*>(vec.data());
     // cout << *p;
-    cout << true;
+    // cout << true;
     return 0;
 }
