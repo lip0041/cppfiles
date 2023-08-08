@@ -1,3 +1,5 @@
+ // g++ aac_code.cpp -o aac_code -lavformat -lavutil -lfdk-aac
+
 #include <fdk-aac/aacdecoder_lib.h>
 #include <fdk-aac/aacenc_lib.h>
 #include <fstream>

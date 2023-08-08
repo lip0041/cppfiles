@@ -1,3 +1,5 @@
+//  g++ play.cpp -o play -lavformat -lavcodec -lavutil -lswresample -lSDL2
+
 #include <SDL2/SDL.h>
 #include <chrono>
 #include <iostream>

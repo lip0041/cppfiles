@@ -1,3 +1,5 @@
+// g++ regex.cpp -o regex -lcrypto
+
 #include "openssl/md5.h"
 #include <cstdio>
 #include <iostream>
