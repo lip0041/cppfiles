@@ -9,6 +9,7 @@ extern "C" {
 #include <libavformat/avformat.h>
 #include <libavutil/log.h>
 #include <libavutil/time.h>
+#include <libavutil/opt.h>
 #include <libswresample/swresample.h>
 }
 
@@ -106,7 +107,7 @@ int thread_func(void* data)
 
                 audioChunk = (unsigned char*)*buffer;
                 audioPos   = audioChunk;
-                audioLen = buffer_size;
+                audioLen   = buffer_size;
             }
         } else if (packet.stream_index == video_index) {
             ret = avcodec_send_packet(vcodecContext, &packet);
@@ -228,14 +229,23 @@ int main()
     thread_quit                    = 0;
     thread_pause                   = 0;
     const char*      filename      = "luca_720p_24gop.mp4";
-    const char*      url           = "rtmp://127.0.0.1:1935/live/test";
+    const char*      rtmp_url      = "rtmp://127.0.0.1:1935/live/test";
+    const char*      rtsp_url      = "rtsp://192.168.62.152/stream";
     AVFormatContext* input_fmt_ctx = nullptr;
     int              ret;
     (void)filename;
-    (void)url;
+    (void)rtmp_url;
+    (void)rtsp_url;
 
-    avformat_network_init();
-    if ((ret = avformat_open_input(&input_fmt_ctx, filename, nullptr, nullptr)) < 0) {
+    AVDictionary* options = nullptr;
+    // avformat_network_init();
+    // av_dict_set(&options, "buffer_size", "4096000", 0);
+    av_dict_set(&options, "rtsp_transport", "tcp", 0);
+    // av_dict_set(&options, "stimeout", "5000000", 0);
+    // av_dict_set(&options, "max_delay", "50000", 0);
+    // input_fmt_ctx = avformat_alloc_context();
+
+    if ((ret = avformat_open_input(&input_fmt_ctx, rtsp_url, nullptr, nullptr)) < 0) {
         av_log(nullptr, AV_LOG_ERROR, "cannot open input file\n");
         return ret;
     }
@@ -367,7 +377,7 @@ int main()
     // wantSpec.freq     = codecpar_a->sample_rate;
     wantSpec.freq = acodecContext->sample_rate;
     // wantSpec.freq     = 48000;
-    wantSpec.format   = AUDIO_F32SYS; // AV_SAMPLE_FMT_FLT corresponding sdl enum
+    wantSpec.format = AUDIO_F32SYS; // AV_SAMPLE_FMT_FLT corresponding sdl enum
     // wantSpec.format   = AUDIO_S16SYS;
     wantSpec.silence  = 0;
     wantSpec.samples  = codecpar_a->frame_size; // same to nb_samples
