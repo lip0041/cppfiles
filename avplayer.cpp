@@ -1,4 +1,4 @@
-//  g++ play.cpp -o play -lavformat -lavcodec -lavutil -lswresample -lSDL2
+//  g++ avplayer.cpp -o play -lavformat -lavcodec -lavutil -lswresample -lSDL2
 
 #include <SDL2/SDL.h>
 #include <chrono>
@@ -228,7 +228,7 @@ int main()
 {
     thread_quit                    = 0;
     thread_pause                   = 0;
-    const char*      filename      = "luca_720p_24gop.mp4";
+    const char*      filename      = "luca_720p.mp4";
     const char*      rtmp_url      = "rtmp://127.0.0.1:1935/live/test";
     const char*      rtsp_url      = "rtsp://192.168.62.152/stream";
     AVFormatContext* input_fmt_ctx = nullptr;
@@ -245,7 +245,7 @@ int main()
     // av_dict_set(&options, "max_delay", "50000", 0);
     // input_fmt_ctx = avformat_alloc_context();
 
-    if ((ret = avformat_open_input(&input_fmt_ctx, rtsp_url, nullptr, nullptr)) < 0) {
+    if ((ret = avformat_open_input(&input_fmt_ctx, filename, nullptr, nullptr)) < 0) {
         av_log(nullptr, AV_LOG_ERROR, "cannot open input file\n");
         return ret;
     }
