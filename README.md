@@ -5,3 +5,4 @@
 - taskpool: 事件中心的任务池
 - threadpool: 线程池c++11实现（用future了就不是异步啦）
 - aac_code: 使用fdk-aac对aac文件进行解码为pcm再编码成aac（暂不清楚aac解码成pcm后的通道数和fmt是否是原aac的格式或是其他的什么格式）
+- eventfd: 针对signalfd, eventfd, timerfd进行简要说明，针对eventfd, timerfd进行简单使用
