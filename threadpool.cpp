@@ -155,7 +155,7 @@ private:
     // 线程池线程执行体
     void ThreadFunc(int32_t threadId)
     {
-        auto lastTime = std::chrono::high_resolution_clock::now();
+        auto lastTime = std::chrono::system_clock::now();
 
         while (true) {
             Task task;
@@ -174,7 +174,7 @@ private:
 
                     if (poolMode_ == PoolMode::MODE_CACHED) {
                         if (std::cv_status::timeout == notEmpty_.wait_for(lock, std::chrono::seconds(1))) {
-                            auto now = std::chrono::high_resolution_clock::now();
+                            auto now = std::chrono::system_clock::now();
                             auto dur = std::chrono::duration_cast<std::chrono::seconds>(now - lastTime);
                             if (dur.count() >= THREAD_MAX_IDLE_TIME && curThreadSize_ > initThreadSize_) {
                                 // cached模式下，若该线程是另创建新创建的线程，且60s内未接收新任务，则回收该新创建的线程
@@ -209,7 +209,7 @@ private:
                 task();
             }
             ++idleThreadSize_;
-            lastTime = std::chrono::high_resolution_clock::now();
+            lastTime = std::chrono::system_clock::now();
         }
     }
 

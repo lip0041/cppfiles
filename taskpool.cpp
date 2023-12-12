@@ -66,8 +66,10 @@ int32_t TaskPool::Start(int32_t threadNum)
     threads_.reserve(threadNum);
     for (int i = 0; i < threadNum; ++i) {
         threads_.push_back(std::thread(&TaskPool::TaskMainWorker, this));
+#ifdef __linux__
         auto name = "thread" + std::to_string(i);
         pthread_setname_np(threads_.back().native_handle(), name.c_str());
+#endif
     }
     return 0;
 }
@@ -137,7 +139,9 @@ public:
             return ret;
         }
         eventThread_ = std::thread(&EventManager::ProcessEvent, this);
+#ifdef __linux__
         pthread_setname_np(eventThread_.native_handle(), "eventloop");
+#endif
         return 0;
     }
     int32_t PushEvent(const std::string& event)
@@ -195,7 +199,9 @@ int main()
     cout << "******enter for start\n" << flush;
     cin.get();
     std::thread t(&Test);
+#ifdef __linux__
     pthread_setname_np(t.native_handle(), "test");
+#endif
     if (t.joinable()) {
         t.join();
     }
