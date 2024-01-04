@@ -18,7 +18,7 @@ int32_t OnEvent(std::string& event)
     std::cout << msg << endl << flush;
     int sum = 0;
     // 注意这段代码可能会被某些默认是O2的编译脚本优化掉，要去掉优化
-    for (int i = 0; i < 1e9; ++i) {
+    for (int i = 0; i < 1e3; ++i) {
         sum += i;
     }
     return 0;
@@ -93,6 +93,7 @@ void TaskPool::PushTask(std::packaged_task<BoundTask>& task)
         std::unique_lock<std::mutex> lock(taskMutex_);
         while (tasks_.size() >= 10) {
             cout << "task pool overload\n" << flush;
+            hasTask_.notify_all();
             acceptNewTask_.wait(lock);
         }
         tasks_.emplace_back(std::move(task));
@@ -162,10 +163,12 @@ private:
             } else {
                 auto event = events_.front();
                 events_.pop();
+                lock.unlock();
                 std::packaged_task<BoundTask> task(std::bind(&OnEvent, event));
                 // auto future = task.get_future(); // sync mode
                 // std::cout << "==========push event: " << event << endl << flush;
                 PushTask(task);
+                lock.lock();
                 // sync mode
                 // if (future.wait_for(std::chrono::milliseconds(1000 * 5)) == std::future_status::ready) {
                 //     std::cout << "=========future: " << future.get() << endl << flush;
@@ -185,25 +188,32 @@ private:
     std::unique_ptr<std::thread> eventLoop_ = nullptr;
 };
 
+EventManager* emgr = nullptr;
+
 void Test()
 {
-    EventManager* emgr = new EventManager();
-    emgr->StartEventLoop();
-
-    for (int i = 0; i < 100; ++i) {
+    for (int i = 0; i < 1e7; ++i) {
         emgr->PushEvent(std::to_string(i));
     }
 }
+
 int main()
 {
     cout << "******enter for start\n" << flush;
     cin.get();
-    std::thread t(&Test);
+    emgr = new EventManager();
+    emgr->StartEventLoop();
+    std::thread t1(&Test);
+    std::thread t2(&Test);
 #ifdef __linux__
-    pthread_setname_np(t.native_handle(), "test");
+    pthread_setname_np(t1.native_handle(), "test1");
+    pthread_setname_np(t2.native_handle(), "test2");
 #endif
-    if (t.joinable()) {
-        t.join();
+    if (t1.joinable()) {
+        t1.join();
+    }
+    if (t2.joinable()) {
+        t2.join();
     }
     cout << "******run done, entor for exit\n" << flush;
     cin.get();
