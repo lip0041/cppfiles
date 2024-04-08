@@ -230,13 +230,7 @@ void DecodeFile(const std::string &inputFile, const std::string &outputFile)
                 (void)totalSize;
                 // std::cout << "totalSize:" << totalSize << std::endl;
                 fwrite(buffer, 1, totalSize, fpa);
-                // auto inputData = dispatcher_->RequestDataBuffer(MEDIA_TYPE_AUDIO, totalSize);
-                // inputData->buff->ReplaceData((const char *)(buffer), totalSize);
-                // inputData->isKey = false;
-                // inputData->mediaType = MEDIA_TYPE_AUDIO;
-                // inputData->pts = packet.pts;
                 // // ++ts_;
-                // dispatcher_->InputData(inputData);
                 ++writeAcount;
                 av_frame_unref(frame);
             }
